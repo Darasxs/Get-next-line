@@ -6,7 +6,7 @@
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:51:28 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/10 19:25:16 by dpaluszk         ###   ########.fr       */
+/*   Updated: 2024/04/10 20:00:38 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@ char	*free_helper(char *s1, char *s2)
 // i have a line + remainder
 // i need to delete this remainder and leave only the first line
 // then i need to delete this line and leave only remainder
-char	*extract_line(int fd, char *my_buffer)
+char	*extract_line(char *my_buffer)
 {
 	char	*extracted_line;
 	char	*new_line_position;
+	size_t	length;
 
 	new_line_position = ft_strchr(my_buffer, '\n');
 	if (new_line_position == NULL)
@@ -36,8 +37,10 @@ char	*extract_line(int fd, char *my_buffer)
 	}
 	else
 	{
-		extracted_line = ft_strdup(new_line_position);
-
+		length = new_line_position - my_buffer;
+		extracted_line = ft_substr(my_buffer, 0, length);
+		if (!extracted_line)
+			return (NULL);
 	}
 	return (extracted_line);
 }
@@ -76,16 +79,19 @@ char	*get_next_line(int fd)
 	my_buffer = read_new_line(fd, my_buffer);
 	if (!my_buffer)
 		return (NULL);
-	line = read_new_line(fd, my_buffer);
+	line = extract_line(my_buffer);
+	if (!line)
+		return (NULL);
 	return (line);
 	// here i will extract the line to return it with no remainder
 	// here i will get only the remainder
 }
 
- int	main(void)
+int	main(void)
 {
-	int fd;
-	char *line;
+	int		fd;
+	char	*line;
+
 	fd = open("test.txt", O_RDONLY);
 	if (fd == -1)
 	{
