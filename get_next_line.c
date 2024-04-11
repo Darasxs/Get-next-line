@@ -6,7 +6,7 @@
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:51:28 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/10 20:00:38 by dpaluszk         ###   ########.fr       */
+/*   Updated: 2024/04/11 15:50:10 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,17 @@ char	*free_helper(char *s1, char *s2)
 	return (NULL);
 }
 
-// i have a line + remainder
-// i need to delete this remainder and leave only the first line
-// then i need to delete this line and leave only remainder
+char	*remainder(char	*my_buffer)
+{
+// in this function I need to get the remainder of my_buffer
+// so i need to check what is after the new line character and delete everything that was before
+	
+	char	*new_line_positon;
+	
+	new_line_position = ft_strchr(my_buffer, '\n');
+	
+}
+
 char	*extract_line(char *my_buffer)
 {
 	char	*extracted_line;
@@ -82,9 +90,8 @@ char	*get_next_line(int fd)
 	line = extract_line(my_buffer);
 	if (!line)
 		return (NULL);
+	my_buffer = remainder(my_buffer);
 	return (line);
-	// here i will extract the line to return it with no remainder
-	// here i will get only the remainder
 }
 
 int	main(void)
