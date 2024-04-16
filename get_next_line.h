@@ -6,7 +6,7 @@
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:51:31 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/15 10:05:46 by dpaluszk         ###   ########.fr       */
+/*   Updated: 2024/04/15 14:26:59 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10
+#  define BUFFER_SIZE 512
 # endif
 
 # include <fcntl.h>
