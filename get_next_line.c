@@ -6,7 +6,7 @@
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:51:28 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/18 11:33:38 by dpaluszk         ###   ########.fr       */
+/*   Updated: 2024/04/18 17:03:42 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,13 @@ char	*ft_remainder(char *my_buffer)
 
 	new_line_position = ft_strchr(my_buffer, '\n');
 	if (new_line_position == NULL)
+	{
 		free(my_buffer);
-	length = ft_strlen(my_buffer);
+		return NULL;
+	}
+	length = ft_strlen(my_buffer) + 1;
 	start = new_line_position - my_buffer + 1;
-	new_buffer = ft_substr(my_buffer, start, length - start + 1);
+	new_buffer = ft_substr(my_buffer, start, length - start);
 	free(my_buffer);
 	return (new_buffer);
 }
@@ -74,7 +77,7 @@ char	*read_new_line(int fd, char *my_buffer)
 	{
 		reading_bytes = read(fd, new_line, BUFFER_SIZE);
 		if (reading_bytes == 0 && ft_strlen(my_buffer) == 0)
-			return (NULL);
+			return (free(new_line), my_buffer);
 		if (reading_bytes == -1)
 			return (free_helper(new_line, my_buffer));
 		new_line[reading_bytes] = '\0';
@@ -84,7 +87,8 @@ char	*read_new_line(int fd, char *my_buffer)
 		free(my_buffer);
 		my_buffer = tmp;
 	}
-	free(new_line);
+	if(new_line)
+		free(new_line);
 	return (my_buffer);
 }
 
@@ -93,8 +97,6 @@ char	*get_next_line(int fd)
 	static char	*my_buffer;
 	char		*line;
 
-	if ((fd < 0) || (BUFFER_SIZE <= 0))
-		return (NULL);
 	if (!my_buffer)
 	{
 		my_buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
@@ -104,10 +106,10 @@ char	*get_next_line(int fd)
 	}
 	my_buffer = read_new_line(fd, my_buffer);
 	if (!my_buffer)
-		return (NULL);
+		return (free(my_buffer), NULL);
 	line = extract_line(my_buffer);
 	if (!line)
-		return (free(line), NULL);
+		return(free(my_buffer), NULL);
 	if (my_buffer[0])
 		my_buffer = ft_remainder(my_buffer);
 	else
@@ -115,22 +117,25 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
- int	main(void)
-{
-	int		fd;
-	char	*line;
+// int	main(void)
+//{
+//	int		fd;
+//	char	*line;
 
-	fd = open("test.txt", O_RDONLY);
-	if (fd == -1)
-	{
-		perror("Error opening file");
-		return (1);
-	}
-	// printf("%s", get_next_line(fd));
-	// printf("%s", get_next_line(fd));
-	// printf("%s", get_next_line(fd));
-	while ((line = get_next_line(fd)) != NULL)
-		printf("%s", line);
-	close(fd);
-	return (0);
-}
+//	fd = open("test.txt", O_RDONLY);
+//	if (fd == -1)
+//	{
+//		perror("Error opening file");
+//		return (1);
+//	}
+//	// printf("%s", get_next_line(fd));
+//	// printf("%s", get_next_line(fd));
+//	// printf("%s", get_next_line(fd));
+//	while ((line = get_next_line(fd)) != NULL)
+//	{
+//		printf("%s", line);
+//		free(line);
+//	}
+//	close(fd);
+//	return (0);
+//}
