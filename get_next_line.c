@@ -6,7 +6,7 @@
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:51:28 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/16 11:03:29 by dpaluszk         ###   ########.fr       */
+/*   Updated: 2024/04/18 11:33:38 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,12 @@ char	*ft_remainder(char *my_buffer)
 	size_t	length;
 	size_t	start;
 
-	// printf("my buffer: %s\n", my_buffer);
 	new_line_position = ft_strchr(my_buffer, '\n');
 	if (new_line_position == NULL)
-		return (my_buffer);
+		free(my_buffer);
 	length = ft_strlen(my_buffer);
-	// printf("length; %zu\n", length);
 	start = new_line_position - my_buffer + 1;
-	// printf("start:%zu\n", start);
 	new_buffer = ft_substr(my_buffer, start, length - start + 1);
-	// printf("new buffer: %s\n", new_buffer);
 	free(my_buffer);
 	return (new_buffer);
 }
@@ -45,7 +41,13 @@ char	*extract_line(char *my_buffer)
 	char	*extracted_line;
 	char	*new_line_position;
 	size_t	length;
+	int		i;
 
+	i = 0;
+	if (*my_buffer == '\0')
+		return (NULL);
+	if (!my_buffer[i])
+		return (NULL);
 	new_line_position = ft_strchr(my_buffer, '\n');
 	if (new_line_position == NULL)
 		extracted_line = ft_strdup(my_buffer);
@@ -61,6 +63,7 @@ char	*read_new_line(int fd, char *my_buffer)
 {
 	ssize_t	reading_bytes;
 	char	*new_line;
+	char	*tmp;
 
 	reading_bytes = 1;
 	new_line = malloc(sizeof(char) * (BUFFER_SIZE + 1));
@@ -70,14 +73,16 @@ char	*read_new_line(int fd, char *my_buffer)
 	while ((reading_bytes > 0) && (ft_strchr(my_buffer, '\n') == NULL))
 	{
 		reading_bytes = read(fd, new_line, BUFFER_SIZE);
-		if (reading_bytes == 0)
-			return NULL ;
+		if (reading_bytes == 0 && ft_strlen(my_buffer) == 0)
+			return (NULL);
 		if (reading_bytes == -1)
-			return (NULL);
+			return (free_helper(new_line, my_buffer));
 		new_line[reading_bytes] = '\0';
-		my_buffer = ft_strjoin(my_buffer, new_line);
-		if (!my_buffer)
-			return (NULL);
+		tmp = ft_strjoin(my_buffer, new_line);
+		if (!tmp)
+			return(NULL);
+		free(my_buffer);
+		my_buffer = tmp;
 	}
 	free(new_line);
 	return (my_buffer);
@@ -88,7 +93,9 @@ char	*get_next_line(int fd)
 	static char	*my_buffer;
 	char		*line;
 
-	if(!my_buffer)
+	if ((fd < 0) || (BUFFER_SIZE <= 0))
+		return (NULL);
+	if (!my_buffer)
 	{
 		my_buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		if (!my_buffer)
@@ -96,20 +103,19 @@ char	*get_next_line(int fd)
 		my_buffer[0] = 0;
 	}
 	my_buffer = read_new_line(fd, my_buffer);
-	//printf("my buffer:%s\n", my_buffer);
 	if (!my_buffer)
 		return (NULL);
 	line = extract_line(my_buffer);
-	//printf("extracted line:%s\n", line);
-	//printf("my buffer after extracting line:%s\n", my_buffer);
 	if (!line)
-		return (NULL);
-	my_buffer = ft_remainder(my_buffer);
-	//printf("my buffer: %s\n", my_buffer);
+		return (free(line), NULL);
+	if (my_buffer[0])
+		my_buffer = ft_remainder(my_buffer);
+	else
+		free(my_buffer);
 	return (line);
 }
 
-int	main(void)
+ int	main(void)
 {
 	int		fd;
 	char	*line;
@@ -120,11 +126,10 @@ int	main(void)
 		perror("Error opening file");
 		return (1);
 	}
-	//printf("%s", get_next_line(fd));
-	//printf("%s", get_next_line(fd));
-	//printf("%s", get_next_line(fd));
-
-	while((line = get_next_line(fd)) != NULL)
+	// printf("%s", get_next_line(fd));
+	// printf("%s", get_next_line(fd));
+	// printf("%s", get_next_line(fd));
+	while ((line = get_next_line(fd)) != NULL)
 		printf("%s", line);
 	close(fd);
 	return (0);
