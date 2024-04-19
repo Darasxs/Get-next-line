@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/07 12:51:28 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/19 12:54:12 by dpaluszk         ###   ########.fr       */
+/*   Created: 2024/04/19 11:44:17 by dpaluszk          #+#    #+#             */
+/*   Updated: 2024/04/19 13:04:26 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,48 +95,68 @@ char	*read_new_line(int fd, char *my_buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*my_buffer;
+	static char	*my_buffer[FOPEN_MAX];
 	char		*line;
 
-	if (!my_buffer)
+	if (BUFFER_SIZE <= 0 || fd < 0 || fd > FOPEN_MAX)
+		return (NULL);
+	if (!my_buffer[fd])
 	{
-		my_buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (!my_buffer)
+		my_buffer[fd] = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		if (!my_buffer[fd])
 			return (NULL);
-		my_buffer[0] = 0;
+		my_buffer[fd][0] = 0;
 	}
-	my_buffer = read_new_line(fd, my_buffer);
-	if (!my_buffer)
-		return (free_helper(NULL, &my_buffer, 0));
-	line = extract_line(my_buffer);
+	my_buffer[fd] = read_new_line(fd, my_buffer[fd]);
+	if (!my_buffer[fd])
+		return (free_helper(NULL, &my_buffer[fd], 0));
+	line = extract_line(my_buffer[fd]);
 	if (!line)
-		return (free_helper(NULL, &my_buffer, 0));
-	if (my_buffer[0])
-		my_buffer = ft_remainder(my_buffer);
+		return (free_helper(NULL, &my_buffer[fd], 0));
+	if (my_buffer[fd][0])
+		my_buffer[fd] = ft_remainder(my_buffer[fd]);
 	else
-		free_helper(NULL, &my_buffer, 0);
+		free_helper(NULL, &my_buffer[fd], 0);
 	return (line);
 }
 
 // int	main(void)
 //{
-//	int		fd;
+//	int		fd1;
+//	int		fd2;
+//	int		fd3;
+	
 //	char	*line;
 
-//	fd = open("test.txt", O_RDONLY);
-//	if (fd == -1)
+//	fd1 = open("test.txt", O_RDONLY);
+//	fd2 = open("test2.txt", O_RDONLY);
+//	fd3 = open("test3.txt", O_RDONLY);
+
+//	if (fd1 == -1 || fd2 == -1 || fd3 == -1)
 //	{
 //		perror("Error opening file");
 //		return (1);
 //	}
-//	// printf("%s", get_next_line(fd));
-//	// printf("%s", get_next_line(fd));
-//	// printf("%s", get_next_line(fd));
-//	while ((line = get_next_line(fd)) != NULL)
+//	while ((line = get_next_line(fd1)) != NULL)
 //	{
 //		printf("%s", line);
 //		free(line);
 //	}
-//	close(fd);
+//	close(fd1);
+	
+//	while ((line = get_next_line(fd2)) != NULL)
+//	{
+//		printf("%s", line);
+//		free(line);
+//	}
+//	close(fd2);
+
+//	while ((line = get_next_line(fd3)) != NULL)
+//	{
+//		printf("%s", line);
+//		free(line);
+//	}
+//	close(fd3);
+	
 //	return (0);
 //}
