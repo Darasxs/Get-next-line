@@ -6,7 +6,7 @@
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:51:17 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/18 16:59:52 by dpaluszk         ###   ########.fr       */
+/*   Updated: 2024/04/18 17:30:49 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ char	*ft_strchr(const char *s, int c)
 		return ((char *)&s[i]);
 	return (NULL);
 }
+
 char	*ft_strdup(const char *s1)
 {
 	char	*str;

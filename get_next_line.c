@@ -6,16 +6,18 @@
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:51:28 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/18 17:03:42 by dpaluszk         ###   ########.fr       */
+/*   Updated: 2024/04/19 11:33:06 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*free_helper(char *s1, char *s2)
+char	*free_helper(char **s1, char **s2, char c)
 {
-	free(s1);
-	free(s2);
+	if (c)
+		free(*s1);
+	free(*s2);
+	*s2 = NULL;
 	return (NULL);
 }
 
@@ -30,7 +32,7 @@ char	*ft_remainder(char *my_buffer)
 	if (new_line_position == NULL)
 	{
 		free(my_buffer);
-		return NULL;
+		return (NULL);
 	}
 	length = ft_strlen(my_buffer) + 1;
 	start = new_line_position - my_buffer + 1;
@@ -79,22 +81,21 @@ char	*read_new_line(int fd, char *my_buffer)
 		if (reading_bytes == 0 && ft_strlen(my_buffer) == 0)
 			return (free(new_line), my_buffer);
 		if (reading_bytes == -1)
-			return (free_helper(new_line, my_buffer));
+			return (free_helper(&new_line, &my_buffer, 1));
 		new_line[reading_bytes] = '\0';
 		tmp = ft_strjoin(my_buffer, new_line);
 		if (!tmp)
-			return(NULL);
+			return (NULL);
 		free(my_buffer);
 		my_buffer = tmp;
 	}
-	if(new_line)
-		free(new_line);
+	free(new_line);
 	return (my_buffer);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*my_buffer;
+	static char	*my_buffer = 0;
 	char		*line;
 
 	if (!my_buffer)
@@ -106,14 +107,14 @@ char	*get_next_line(int fd)
 	}
 	my_buffer = read_new_line(fd, my_buffer);
 	if (!my_buffer)
-		return (free(my_buffer), NULL);
+		return (free_helper(NULL, &my_buffer, 0));
 	line = extract_line(my_buffer);
 	if (!line)
-		return(free(my_buffer), NULL);
+		return (free_helper(NULL, &my_buffer, 0));
 	if (my_buffer[0])
 		my_buffer = ft_remainder(my_buffer);
 	else
-		free(my_buffer);
+		free_helper(NULL, &my_buffer, 0);
 	return (line);
 }
 

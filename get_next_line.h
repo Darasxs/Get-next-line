@@ -6,7 +6,7 @@
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:51:31 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/17 17:44:07 by dpaluszk         ###   ########.fr       */
+/*   Updated: 2024/04/18 17:27:46 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 char	*get_next_line(int fd);
 char	*read_new_line(int fd, char *my_buffer);
-char	*free_helper(char *s1, char *s2);
+char	*free_helper(char **s1, char **s2, char c);
 size_t	ft_strlen(const char *s);
 char	*ft_strjoin(const char *s1, const char *s2);
 char	*ft_strchr(const char *s, int c);
