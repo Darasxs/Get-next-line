@@ -6,7 +6,7 @@
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:44:17 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/19 13:04:26 by dpaluszk         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:03:44 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ char	*get_next_line(int fd)
 //	int		fd1;
 //	int		fd2;
 //	int		fd3;
-	
+
 //	char	*line;
 
 //	fd1 = open("test.txt", O_RDONLY);
@@ -143,7 +143,6 @@ char	*get_next_line(int fd)
 //		free(line);
 //	}
 //	close(fd1);
-	
 //	while ((line = get_next_line(fd2)) != NULL)
 //	{
 //		printf("%s", line);
@@ -157,6 +156,5 @@ char	*get_next_line(int fd)
 //		free(line);
 //	}
 //	close(fd3);
-	
 //	return (0);
 //}

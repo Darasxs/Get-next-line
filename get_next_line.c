@@ -6,7 +6,7 @@
 /*   By: dpaluszk <dpaluszk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:51:28 by dpaluszk          #+#    #+#             */
-/*   Updated: 2024/04/19 12:54:12 by dpaluszk         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:03:17 by dpaluszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ char	*get_next_line(int fd)
 	static char	*my_buffer;
 	char		*line;
 
+	if ((fd < 0) || (BUFFER_SIZE <= 0))
+		return (NULL);
 	if (!my_buffer)
 	{
 		my_buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
